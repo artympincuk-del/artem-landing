@@ -344,12 +344,12 @@
   .process-list .step:nth-child(2) { transition-delay: 0.08s; }
   .process-list .step:nth-child(3) { transition-delay: 0.16s; }
   .process-list .step:nth-child(4) { transition-delay: 0.24s; }
-  .slots .slot:nth-child(1) { transition-delay: 0s; }
-  .slots .slot:nth-child(2) { transition-delay: 0.08s; }
-  .slots .slot:nth-child(3) { transition-delay: 0.16s; }
+  .cases .case:nth-child(1) { transition-delay: 0s; }
+  .cases .case:nth-child(2) { transition-delay: 0.08s; }
+  .cases .case:nth-child(3) { transition-delay: 0.16s; }
   @media (prefers-reduced-motion: reduce) {
     .reveal { transition: none; opacity: 1; transform: none; }
-    .modules .module, .process-list .step, .slots .slot { transition-delay: 0s; }
+    .modules .module, .process-list .step, .cases .case { transition-delay: 0s; }
   }
 
   /* ---------- services ---------- */
@@ -456,37 +456,99 @@
     color: var(--ink-muted);
     margin-bottom: 32px;
   }
-  .slots {
+  .cases {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
   }
-  .slot {
-    border: 1px dashed var(--line-strong);
+  .case {
     background: var(--surface);
-    min-height: 140px;
+    padding: 26px 24px;
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 16px;
-    transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.25s ease, transform 0.25s ease;
+    transition: opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.25s ease, background 0.25s ease;
   }
-  .slot:hover { border-color: var(--accent-2); transform: translateY(-3px); }
+  .case:hover { transform: translateY(-5px); background: var(--surface-2); }
+  .case::before, .case::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--line-strong);
+    transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
+  }
+  .case::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+  .case::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+  .case:hover::before, .case:hover::after { width: 18px; height: 18px; border-color: var(--accent); }
   @media (prefers-reduced-motion: reduce) {
-    .slot { transition: none; }
-    .slot:hover { transform: none; }
+    .case, .case::before, .case::after { transition: none; }
+    .case:hover { transform: none; }
   }
-  .slot .slot-id {
+  .case-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .case h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: 0.01em; }
+  .case-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-family: ui-monospace, "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 45%, transparent);
+    animation: live-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 45%, transparent); }
+    50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-2) 0%, transparent); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot { animation: none; }
+  }
+  .case p {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+  }
+  .case .spec {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line-strong);
     font-family: ui-monospace, "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace;
     font-size: 0.72rem;
     color: var(--ink-muted);
+    letter-spacing: 0.02em;
   }
-  .slot .slot-status {
+  .case-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
     font-family: ui-monospace, "JetBrains Mono", "Cascadia Code", "SF Mono", Consolas, monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent-2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .case-link .arrow { display: inline-block; color: var(--accent); transition: transform 0.2s ease; }
+  .case-link:hover .arrow, .case-link:focus-visible .arrow { transform: translateX(4px); }
+  @media (prefers-reduced-motion: reduce) {
+    .case-link .arrow { transition: none; }
   }
 
   /* ---------- contact ---------- */
@@ -666,22 +728,37 @@
   <section id="portfolio">
     <div class="wrap">
       <div class="section-head reveal">
-        <div class="eyebrow mono">В РАБОТЕ</div>
+        <div class="eyebrow mono">ЖИВЫЕ ПРОЕКТЫ</div>
         <h2>Портфолио</h2>
       </div>
-      <p class="portfolio-note reveal">Портфолио сейчас в сборке — здесь появятся кейсы по мере завершения проектов. Место под них уже зарезервировано.</p>
-      <div class="slots">
-        <div class="slot reveal">
-          <span class="slot-id mono">СЛОТ 01 · ЛЕНДИНГ</span>
-          <span class="slot-status mono">Готовится</span>
+      <p class="portfolio-note reveal">Три последних кейса — все три сейчас работают в проде, ссылки ведут на живые версии.</p>
+      <div class="cases">
+        <div class="case reveal">
+          <div class="case-head">
+            <h3>Paknym AI</h3>
+            <span class="case-status"><span class="live-dot"></span>LIVE</span>
+          </div>
+          <p>Лендинг Telegram-бота с ИИ-ассистентом: чат, распознавание фото и голоса, чтение PDF, генерация картинок и поиск в интернете.</p>
+          <div class="spec">STACK: HTML · CSS · GSAP</div>
+          <a class="case-link" href="https://paknym-ai-landing.onrender.com" target="_blank" rel="noopener">Открыть сайт <span class="arrow">→</span></a>
         </div>
-        <div class="slot reveal">
-          <span class="slot-id mono">СЛОТ 02 · TG-БОТ</span>
-          <span class="slot-status mono">Готовится</span>
+        <div class="case reveal">
+          <div class="case-head">
+            <h3>Мессенджер</h3>
+            <span class="case-status"><span class="live-dot"></span>LIVE</span>
+          </div>
+          <p>Realtime-чаты со статусом «онлайн», индикатором печати, галочками прочтения, реакциями, лентой постов и админкой — без перезагрузки страницы.</p>
+          <div class="spec">STACK: Flask · Socket.IO · SQLite</div>
+          <a class="case-link" href="https://messenger-app-39vp.onrender.com" target="_blank" rel="noopener">Открыть сайт <span class="arrow">→</span></a>
         </div>
-        <div class="slot reveal">
-          <span class="slot-id mono">СЛОТ 03 · ПАРСЕР</span>
-          <span class="slot-status mono">Готовится</span>
+        <div class="case reveal">
+          <div class="case-head">
+            <h3>Беатон</h3>
+            <span class="case-status"><span class="live-dot"></span>LIVE</span>
+          </div>
+          <p>Сайт производителя товарного бетона: каталог классов прочности B10–B90, интерактивные калькуляторы подбора и встроенный консультант.</p>
+          <div class="spec">STACK: React · TypeScript · Vite · Tailwind</div>
+          <a class="case-link" href="https://beaton-website.onrender.com" target="_blank" rel="noopener">Открыть сайт <span class="arrow">→</span></a>
         </div>
       </div>
     </div>
